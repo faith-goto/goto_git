@@ -91,28 +91,12 @@ print <<EOM
 <button type="submit" name="update_user" value="changebtn" onclick="location.reload();">修正</button>
 </form>
 <input type="button" value="戻る" onclick="window.location.href='http://10.172.81.244:510/'">
-
-<script type="text/javascript">
-function disp(){
-
-	// 「OK」時の処理開始 ＋ 確認ダイアログの表示
-	if(window.confirm('修正してよろしいですか？')){
-  $("#af_jpn").html('a');
-	}
-	else{
-		window.alert('キャンセルされました'); // 警告ダイアログを表示
-	}
-	// 「キャンセル」時の処理終了
-
-}
-</script>
 </body>
 </html>
 EOM
 
 if cth_id == "" then
  cth_id = cgi["id"]
-else
 end
 
 addup="UPDATE first SET jpn=#{jpn}, math=#{math}, eng=#{eng}, sci=#{sci} WHERE id=#{cth_id};"
