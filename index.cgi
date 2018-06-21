@@ -41,7 +41,7 @@ created = []
 modified = []
 
 #全員表示
-results = client.query("SELECT * FROM first").each do |f_data|
+results = client.query("SELECT * FROM first;").each do |f_data|
   id.push(f_data["id"])
   name.push(f_data["name"])
   jpn.push(f_data["jpn"])
@@ -52,17 +52,10 @@ results = client.query("SELECT * FROM first").each do |f_data|
   modified.push(f_data["modified"])
 end
 
-#指定したユーザのテスト結果を返す
-if cgi["onlytest"] != "" then
-	strdata = "<p>" +  cgi["onlytest"] + "</p>"
-else
-	strdata = '<p>誰のテスト結果が見たい？</p>'
-end
-
 #指定したIDのユーザデータ削除
 del_user = cgi["deluser"]
-    delcom = "DELETE FROM first WHERE id = '#{del_user}';"
-    client.query(delcom)
+  delcom = "DELETE FROM first WHERE id = '#{del_user}';"
+  client.query(delcom)
 
 
 #合計点求めたい
@@ -91,6 +84,32 @@ get_AVG = client.query(addAVG).each do |b_data|
   sci_avg.push(b_data["AVG(sci)"])
 end
 
+#指定したユーザのテスト結果を返す(脳筋)
+if cgi["onlytest"] != "" then
+	strdata = cgi["onlytest"]
+  sel_id =[]
+  sel_name =[]
+  sel_jpn = []
+  sel_math = []
+  sel_eng = []
+  sel_sci = []
+  sel_created = []
+  sel_modified = []
+
+  #SELECTでユーザ取得
+  selUser = client.query("SELECT * FROM first WHERE name='"+strdata+"';").each do |c_data|
+    sel_id.push(c_data["id"])
+    sel_name.push(c_data["name"])
+    sel_jpn.push(c_data["jpn"])
+    sel_math.push(c_data["math"])
+    sel_eng.push(c_data["eng"])
+    sel_sci.push(c_data["sci"])
+    sel_created.push(c_data["created"])
+    sel_modified.push(c_data["modified"])
+  end
+else
+  selUser = []
+end
 
 
 print "Content-type: text/html\n\n"
@@ -133,57 +152,78 @@ print <<EOM
 </form>
 <form id="deldata" method="post">
   <p>削除したいユーザーID：
-  <input type="number" name="deluser" min=0>
-  <button type="submit" name="del_button">送信</button>
+    <input type="number" name="deluser" min=0>
+    <button type="submit" name="del_button">送信</button>
   </p>
 
 <p>＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊</p>
 </form>
 <form method="GET">
 <button type="button" onclick="showall()">ユーザ一覧表示</button>
+<table id='alluser' border=1 style='display:none'>
+<tr>
+<th>id</th><th>名前</th><th>国語</th><th>数学</th><th>英語</th><th>理科</th><th>作成</th><th>修正</th>
+</tr>
 EOM
-puts ("<table id='alluser' border=1 style='display:none'>")
-puts ("<tr>")
-puts ('<th>id</th><th>name</th><th>jpn</th><th>math</th><th>eng</th><th>sci</th><th>created</th><th>modified</th>')
-puts ("</tr>")
+
 i = results.count
 for i in 0..i -1
   puts ("<tr name='i'>")
-  puts ("<form name='send_userlog' action='./change.cgi' method='post'>")
   puts ("<input type='hidden' name='param' value='#{id[i]}'>")
   puts ("</form>")
   puts ("<td>#{id[i]}</td><td>#{name[i]}</td><td>#{jpn[i]}</td><td>#{math[i]}</td><td>#{eng[i]}</td><td>#{sci[i]}</td><td>#{created[i]}</td><td>#{modified[i]}</td><td><a href='./change.cgi?id=#{id[i]}'>編集</a></td>")
   puts ("</tr>")
 end
+
 puts ("</table>")
 puts ("<p>＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊</p>")
-puts ("<p>指定ユーザのテスト結果")
+puts ("<form id='select_user' method='POST'>")
+puts ("<p>指定ユーザのテスト結果(同性同名同一Ver)")
 puts ("<select name='onlytest'>")
+
 i = results.count
 for i in 0..i -1
-puts ("<option value='#{name[i]}さんのテスト結果ーー>国語：#{jpn[i]}　数学：#{math[i]}　英語：#{eng[i]}　理科：#{sci[i]}'>#{name[i]}</option>")
-#puts ("<option value='#{id[i]}'>#{name[i]}</option>")
+puts ("<option value='#{name[i]}'>#{name[i]}</option>")
 end
 
 print <<EOM
   </select>
   <input type="submit" value="検索">
-  #{strdata}
-</p>
+  </form>
+  </p>
+
+<table id='catch_seluser' border=1>
+<tr>
+<th>ID</th><th>名前</th><th>国語</th><th>数学</th><th>英語</th><th>理科</th>
+</tr>
+EOM
+
+
+k = selUser.count
+for k in 0..k -1
+  puts ("<tr>")
+  puts ("<td>#{sel_id[k]}</td><td>#{sel_name[k]}</td><td>#{sel_jpn[k]}</td><td>#{sel_math[k]}</td><td>#{sel_eng[k]}</td><td>#{sel_sci[k]}</td>")
+  puts ("</tr>")
+end
+
+print <<EOM
+</table>
 ＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 <p>ユーザそれぞれの合計点</p>
+<table id='sumuser' border=1>
+<tr>
+<th>name</th><th>合計点</th>
+</tr>
 EOM
-puts ("<table id='sumuser' border=1>")
-puts ("<tr>")
-puts ('<th>name</th><th>合計点</th>')
-puts ("</tr>")
+
 for i in 0..i -1
   puts ("<tr>")
   puts ("<td>#{name_sum[i]}</td><td>#{test_sum[i]}</td>")
   puts ("</tr>")
 end
-puts ("</table>")
+
 print <<EOM
+</table>
 
 <p>各教科の平均点</p>
 <table id='avguser' border=1>

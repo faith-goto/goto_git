@@ -6,7 +6,7 @@ require "mysql2"
 
 print "Content-type: text/html\n\n"
 
-#インスタンスを生成し、id変数にindexから受け取った編集したいidを格納
+#インスタンスを生成し、id変数にindexから受け取った編集したいidを格納したい
 cgi = CGI.new
 cth_id = cgi["id"]
 
@@ -64,8 +64,8 @@ print <<EOM
 <form id="updata" action="/change.cgi" method="POST">
 <table class="change_User" border=1>
 <tr>
-  <th>ID:#{id}</th>
-  <td><input type="hidden" name="id" value="#{id}"></td>
+  <th>ID:#{cth_id}</th>
+  <td><input type="hidden" name="id" value="#{cth_id}"></td>
 </tr>
 <tr>
   <th>名前:</th>
@@ -91,28 +91,12 @@ print <<EOM
 <button type="submit" name="update_user" value="changebtn" onclick="location.reload();">修正</button>
 </form>
 <input type="button" value="戻る" onclick="window.location.href='http://10.172.81.244:510/'">
-
-<script type="text/javascript">
-function disp(){
-
-	// 「OK」時の処理開始 ＋ 確認ダイアログの表示
-	if(window.confirm('修正してよろしいですか？')){
-  $("#af_jpn").html('a');
-	}
-	else{
-		window.alert('キャンセルされました'); // 警告ダイアログを表示
-	}
-	// 「キャンセル」時の処理終了
-
-}
-</script>
 </body>
 </html>
 EOM
 
 if cth_id == "" then
  cth_id = cgi["id"]
-else
 end
 
 addup="UPDATE first SET jpn=#{jpn}, math=#{math}, eng=#{eng}, sci=#{sci} WHERE id=#{cth_id};"
