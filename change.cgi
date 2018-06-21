@@ -5,63 +5,51 @@ require "cgi"
 require "mysql2"
 
 print "Content-type: text/html\n\n"
-print "test"
+
 #インスタンスを生成し、id変数にindexから受け取った編集したいidを格納
 cgi = CGI.new
 cth_id = cgi["id"]
-if cth_id == "" then
- cth_id = cgi["id"]
-end
-
 
 #DB接続
 client = Mysql2::Client.new(host: "localhost", username: "goto", password: "", database: "goto_practice")
 
 #データベースの値を取得するためのやーつら
-id = []
-name = []
-jpn = []
-math = []
-eng = []
-sci = []
-created = []
-modified = []
-print "test"
-print "cth_id: #{cth_id} /"
-#編集したいIDのデータを個々に取得
+c_id = []
+c_name = []
+c_jpn = []
+c_math = []
+c_eng = []
+c_sci = []
+c_created = []
+c_modified = []
+
+#編集したいIDのデータを個々に取得する
 client.query("SELECT * FROM first WHERE id=" + cth_id).each do |f_data|
-  id.push(f_data["id"])
-  name.push(f_data["name"])
-  jpn.push(f_data["jpn"])
-  math.push(f_data["math"])
-  eng.push(f_data["eng"])
-  sci.push(f_data["sci"])
-  created.push(f_data["created"])
-  modified.push(f_data["modified"])
+  c_id.push(f_data["id"])
+  c_name.push(f_data["name"])
+  c_jpn.push(f_data["jpn"])
+  c_math.push(f_data["math"])
+  c_eng.push(f_data["eng"])
+  c_sci.push(f_data["sci"])
+  c_created.push(f_data["created"])
+  c_modified.push(f_data["modified"])
 end
-print cth_id
-print "test"
-update_id = cgi["id"]
-update_name = cgi["name_data"]
-update_jpn = cgi["jpndata"]
-update_math = cgi["mathdata"]
-update_eng = cgi["engdata"]
-update_sci = cgi["scidata"]
 
+id = cgi["id"]
+name = cgi["name"]
+jpn = cgi["jpn"]
+math = cgi["math"]
+eng = cgi["eng"]
+sci = cgi["sci"]
 
-
-#addup="UPDATE first SET jpn=#{update_jpn.to_i}, math=#{update_math.to_i}, eng=#{update_eng.to_i}, sci=#{update_sci.to_i} WHERE id=#{update_id};"
-#client.query(addup)
-#addup = "UPDATE first SET jpn=54,math=14,eng=3,sci=2 WHERE id=#{update_id};"
-#addup="UPDATE first SET jpn=#{jpn[0]}, math=#{math[0]}, eng=#{eng[0]}, sci=#{sci[0]} WHERE id=#{update_id};"
-#client.query(addup)
-=begin
-if update_name != "" then
-  addup = "UPDATE first SET jpn=54,math=14,eng=34,sci=20 WHERE id=150;"
-  client.query(addup)
+if name != "" || jpn != "" || math != "" || eng!= "" || sci!="" then
+  c_id[0] = id
+  c_name[0] = name
+  c_jpn[0] = jpn
+  c_math[0] = math
+  c_eng[0] = eng
+  c_sci[0] = sci
 end
-=end
-
 
 print <<EOM
 <html>
@@ -76,41 +64,40 @@ print <<EOM
 <form id="updata" action="/change.cgi" method="POST">
 <table class="change_User" border=1>
 <tr>
-  <th>ID:#{id[0]}</th>
-  <td><input type="hidden" name="id" value="#{id[0]}"></td>
+  <th>ID:#{id}</th>
+  <td><input type="hidden" name="id" value="#{id}"></td>
 </tr>
 <tr>
   <th>名前:</th>
-  <td><input type="text" name="name_data" value="#{name[0]}" required></td>
+  <td><input type="text" name="name" value="#{c_name[0]}" required></td>
 </tr>
 <tr>
   <th>国語:</th>
-  <td><input type="number" name="jpndata" value="#{jpn[0]}" min=0 max=100 required></td>
+  <td><input type="number" name="jpn" value="#{c_jpn[0]}" min=0 max=100 required></td>
 </tr>
 <tr>
   <th>数学:</th>
-  <td><input type="number" name="mathdata" value="#{math[0]}" min=0 max=100 required></td>
+  <td><input type="number" name="math" value="#{c_math[0]}" min=0 max=100 required></td>
 </tr>
 <tr>
   <th>英語:</th>
-  <td><input type="number" name="engdata" value="#{eng[0]}" min=0 max=100 required></td>
+  <td><input type="number" name="eng" value="#{c_eng[0]}" min=0 max=100 required></td>
 </tr>
 <tr>
   <th>理科:</th>
-  <td><input type="number" name="scidata" value="#{sci[0]}" min=0 max=100 required></td>
+  <td><input type="number" name="sci" value="#{c_sci[0]}" min=0 max=100 required></td>
 </tr>
 </table>
-<button type="submit" name="update_user" value="changebtn" onclick="disp()">修正</button>
+<button type="submit" name="update_user" value="changebtn" onclick="location.reload();">修正</button>
 </form>
+<input type="button" value="戻る" onclick="window.location.href='http://10.172.81.244:510/'">
 
 <script type="text/javascript">
 function disp(){
 
 	// 「OK」時の処理開始 ＋ 確認ダイアログの表示
 	if(window.confirm('修正してよろしいですか？')){
-      submit();
-  $("#updata").html('<input type="button" value="戻る" onclick="history.back()">');
-
+  $("#af_jpn").html('a');
 	}
 	else{
 		window.alert('キャンセルされました'); // 警告ダイアログを表示
@@ -122,3 +109,11 @@ function disp(){
 </body>
 </html>
 EOM
+
+if cth_id == "" then
+ cth_id = cgi["id"]
+else
+end
+
+addup="UPDATE first SET jpn=#{jpn}, math=#{math}, eng=#{eng}, sci=#{sci} WHERE id=#{cth_id};"
+client.query(addup)
