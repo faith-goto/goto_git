@@ -153,7 +153,7 @@ if cgi["select_id_only"] != "" then
   onlystr = "ID:#{onlydata}      #{only_name[0]} の全テストデータ"
 else
   onlyUser = []
-  onlystr = "指定ユーザのテスト結果(同性同名分けるよVer)"
+  onlystr = "複数テーブルを用いたユーザのテスト結果(同性同名分けるよVer)"
 end
 
 
@@ -230,7 +230,7 @@ print <<EOM
 EOM
 
 i = results.count
-puts ("<option>誰のテストデータが見たい？</option>")
+puts ("<option disabled selected>誰のテストデータが見たい？</option>")
 for i in 0..i -1
 puts ("<option value='#{name[i]}'>#{name[i]}</option>")
 end
@@ -264,7 +264,7 @@ print <<EOM
 EOM
 
 i = res_kojin.count
-puts ("<option>誰のテストデータが見たい？</option>")
+puts ("<option disabled selected>誰のテストデータが見たい？</option>")
 for i in 0..i -1
 puts ("<option value='#{kojin_id[i]}'>#{kojin_id[i]}:#{kojin_name[i]}</option>")
 end
