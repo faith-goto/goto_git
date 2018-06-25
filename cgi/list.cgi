@@ -9,7 +9,7 @@ cgi = CGI.new
 table= cgi['table']
 
 #DB接続
-#client = Mysql2::Client.new(host: "localhost", username: "yoshihara", password: "", database: "practice")
+client = Mysql2::Client.new(host: "localhost", username: "yoshihara", password: "", database: "practice")
 
 # HTMLとして画面に返す
 print "Content-type: text/html\n\n"
@@ -25,7 +25,7 @@ puts ("<tr>")
 
 case table
 #userテーブルの内容を表示
-when "user" then
+when "user"  then
   id = []
   username = []
   organization_id = []
@@ -33,7 +33,7 @@ when "user" then
   password = []
   login_num = []
   results = client.query("SELECT id, username, organization_id, email, password, login_num FROM #{table} ORDER BY id ASC")
-  results.each do |u_data|
+  results.each do |u_data| 
     id.push(u_data["id"])
     username.push(u_data["username"])
     organization_id.push(u_data["organization_id"])
@@ -101,31 +101,8 @@ when "first"  then
     puts ("<td>#{id[i]}</td><td>#{name[i]}</td><td>#{jpn[i]}</td><td>#{math[i]}</td><td>#{eng[i]}</td><td>#{sci[i]}</td><td>#{created[i]}</td><td>#{modifined[i]}</td>")
     puts ("</tr>")
   end
-#検索フォームの表示
-when "serch" then
-  results = client.query("SELECT id, name, jpn, math, eng, sci, created, modifined FROM #{table} ORDER BY id ASC")
-  id = []
-  name = []
-  jpn = []
-  math = []
-  eng = []
-  sci = []
-  created = []
-  modifined = []
-  results.each do |f_data|
-    id.push(f_data["id"])
-    name.push(f_data["name"])
-    jpn.push(f_data["jpn"])
-    math.push(f_data["math"])
-    eng.push(f_data["eng"])
-    sci.push(f_data["sci"])
-    created.push(f_data["created"])
-    modifined.push(f_data["modifined"])
-  end
-  puts ('<h1>検索フォーム</h1>')
-  puts ('<form>テーブル名')
-  puts ('</from>')
 end
+
 puts ("</table>")
 puts ("</body>")
 puts ("</html>")
