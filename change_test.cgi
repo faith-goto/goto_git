@@ -47,7 +47,7 @@ print <<EOM
 <head>
 <meta http-equiv="Content-type" content="text/html; charset=euc-jp">
 <title>修正フォーム</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 </head>
 
 <body>
@@ -91,9 +91,18 @@ print <<EOM
   <td><input type="number" name="soc" value="#{soc}" min=0 max=100 required></td>
 </tr>
 </table>
-<button type="submit" name="update_user" value="changebtn" onclick="location.reload();">修正</button>
+<button type="submit" name="update_user" value="changebtn" onClick="disp()">修正</button>
 </form>
 <input type="button" value="戻る" onclick="window.location.href='http://10.172.81.244:510/test.cgi'">
+<script type="text/javascript">
+function disp(){
+  if(window.confirm("本当に修正しますか")){
+    location.href = "http://10.172.81.244:510/test.cgi"
+  }else{
+    window.alert("キャンセルされました");
+   }
+}
+</script>
 </body>
 </html>
 EOM

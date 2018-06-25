@@ -104,8 +104,15 @@ else
   onlystr = "複数テーブルを用いたユーザのテスト結果(同性同名分けるよVer)"
 end
 
+deluser = cgi["test_data"]
+
+
+
 
 print "Content-type: text/html\n\n"
+
+print "test:#{deluser}です"
+
 
 print <<EOM
 <html>
@@ -119,9 +126,8 @@ print <<EOM
   </head>
   <body>
 
-
   <h1>テストデータ</h1>
-  <form method="POST">
+  <form id="test_data" method="POST" action="/test.cgi">
     <table id="first_table" border=1>
 
     <tr align="center">
@@ -136,13 +142,16 @@ EOM
       puts ("<td>#{jpn[i]+math[i]+eng[i]+sci[i]+soc[i]}</td>")
       puts ("<td>#{(jpn[i]+math[i]+eng[i]+sci[i]+soc[i])/5}</td>")
       puts ("<td><a href='./change_test.cgi?id=#{id[i]}&name=#{name[i]}&testname=#{testname[i]}&testday=#{testday[i]}&jpn=#{jpn[i]}&math=#{math[i]}&eng=#{eng[i]}&sci=#{sci[i]}&soc=#{soc[i]}'>編集</a></td>")
-      puts ("<td><a href='./'>削除</a></td>")
+
+      puts ("<td><input type='hidden' name='deluser' value='#{id[i]}'>
+        <button type='submit' id='del_button' onClick='disp()'>削除</button>
+        </td>")
       puts ("</tr>")
     end
 
 print <<EOM
     </table>
-
+    </form>
 <!- 指定したユーザのみ表示 -->
     <h2>ユーザ別テストデータ</h2>
     <form id='select_user_only' method='POST'>
@@ -159,7 +168,7 @@ EOM
 
 print <<EOM
     </select>
-    <input type="submit" value="検索">
+    <input type="submit" value="検索" >
     </p>
     </form>
     <table id='second_table' border=1>
@@ -177,7 +186,15 @@ EOM
 
 print <<EOM
     </table>
-  </form>
+  <script type="text/javascript">
+  function disp(){
+    if(window.confirm("本当に削除しますか")){
+
+    }else{
+      window.alert("キャンセルされました");
+     }
+  }
+  </script>
   </body>
 </html>
 EOM
