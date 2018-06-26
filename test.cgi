@@ -85,8 +85,6 @@ if cgi["select_id_only"] != "" then
   ON all_test.id = res_test.id_test
   AND kojin.id ='#{onlydata}';"
 
-
-
   onlyUser = client.query(onlyDB).each do |d_data|
     only_id.push(d_data["id"])
     only_name.push(d_data["name"])
@@ -98,31 +96,73 @@ if cgi["select_id_only"] != "" then
     only_sci.push(d_data["sci"])
     only_soc.push(d_data["soc"])
   end
+
   onlystr = "ID:#{onlydata}      #{only_name[0]} の全テストデータ"
 else
   onlyUser = []
   onlystr = "複数テーブルを用いたユーザのテスト結果(同性同名分けるよVer)"
 end
 
-deluser = cgi["test_data"]
+#テスト種目別データ
+if cgi["select_testname"] !="" then
+
+  testname_id =[]
+  testname_name =[]
+  testname_testname = []
+  testname_jpn = []
+  testname_math = []
+  testname_eng = []
+  testname_sci = []
+  testname_soc = []
+  testname_day = []
+
+  select_testname = cgi["select_testname"]
+
+  testnameDB = "SELECT kojin.id, kojin.name,all_test.testname,all_test.testday, res_test.jpn, res_test.math, res_test.eng, res_test.sci, res_test.soc FROM (kojin INNER JOIN res_test ON kojin.id = res_test.id) INNER JOIN all_test ON all_test.id = res_test.id_test WHERE all_test.id=#{select_testname} ORDER BY res_test.id ASC;"
+
+  testnameUser = client.query(testnameDB).each do |d_data|
+    testname_id.push(d_data["id"])
+    testname_name.push(d_data["name"])
+    testname_testname.push(d_data["testname"])
+    testname_day.push(d_data["testday"])
+    testname_jpn.push(d_data["jpn"])
+    testname_math.push(d_data["math"])
+    testname_eng.push(d_data["eng"])
+    testname_sci.push(d_data["sci"])
+    testname_soc.push(d_data["soc"])
+  end
+
+  testnamestr = "#{testname_testname[0]}"
+else
+  testnameUser = []
+  testnamestr = "何のテストか"
+end
 
 
-
+del_id = cgi["id"]
+del_name = cgi["name"]
+#テスト種目の文字列をIDに変換する
+d = res_all_test.count
+for d in 0..d -1
+  if cgi["testname"] == all_test_testname[d] then
+    del_testname = all_test_id[d]
+  end
+end
+client.query("DELETE FROM res_test WHERE id='#{del_id}' AND name='#{del_name}' AND id_test='#{del_testname}'")
 
 print "Content-type: text/html\n\n"
-
-print "test:#{deluser}です"
-
 
 print <<EOM
 <html>
   <head>
   <meta http-equiv="Content-type" content="text/html; charset=euc-jp">
+  <meta http-equiv="refresh" content="60" >
   <title>検索フォーム</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
   <a href='./'>TOP</a>
-  <a href='./'>個人情報登録</a>
+  <a href='./signup.cgi'>個人情報登録</a>
+  <a href='./report.cgi'>テスト入力フォーム</a>
   </head>
   <body>
 
@@ -143,9 +183,7 @@ EOM
       puts ("<td>#{(jpn[i]+math[i]+eng[i]+sci[i]+soc[i])/5}</td>")
       puts ("<td><a href='./change_test.cgi?id=#{id[i]}&name=#{name[i]}&testname=#{testname[i]}&testday=#{testday[i]}&jpn=#{jpn[i]}&math=#{math[i]}&eng=#{eng[i]}&sci=#{sci[i]}&soc=#{soc[i]}'>編集</a></td>")
 
-      puts ("<td><input type='hidden' name='deluser' value='#{id[i]}'>
-        <button type='submit' id='del_button' onClick='disp()'>削除</button>
-        </td>")
+      puts ("<td><a href='./test.cgi?id=#{id[i]}&name=#{name[i]}&testname=#{testname[i]}' onClick='disp()'>削除</a></td>")
       puts ("</tr>")
     end
 
@@ -186,6 +224,38 @@ EOM
 
 print <<EOM
     </table>
+
+    <h2>テスト種目別データ表示</h2>
+    <form id='select_test_form' method='POST'>
+    <select name="select_testname">
+EOM
+
+a = res_all_test.count
+puts ("<option disabled selected>何のテストデータが見たい？</option>")
+for a in 0..a -1
+puts ("<option value='#{all_test_id[a]}'>#{all_test_id[a]}:#{all_test_testname[a]}</option>")
+end
+
+print <<EOM
+    </select>
+    <input type="submit" value="検索" >
+    </form>
+    <table id='third_table' border=1>
+    <tr>
+    <th>生徒ID</th><th>名前</th><th>テスト種目</th><th>実施日</th><th>国語</th><th>数学</th><th>英語</th><th>理科</th><th>社会</th>
+    </tr>
+EOM
+
+t = testnameUser.count
+for t in 0..t -1
+  puts ("<tr>")
+  puts ("<td>#{testname_id[t]}</td><td>#{testname_name[t]}</td><td>#{testname_testname[t]}</td><td>#{testname_day[t]}</td><td>#{testname_jpn[t]}</td><td>#{testname_math[t]}</td><td>#{testname_eng[t]}</td><td>#{testname_sci[t]}</td><td>#{testname_soc[t]}</td>")
+#puts ("<td>#{testname_id[t]}</td><td>#{testname_name[t}</td><td>#{testname_testname[t]}</td><td>#{testname_day[t]}</td><td>#{testname_jpn[t]}</td><td>#{testname_math[t]}</td><td>#{testname_eng[t]}</td><td>#{testname_sci[t]}</td><td>#{testname_soc[t]}</td>")
+  puts ("</tr>")
+end
+
+print <<EOM
+#{testnamestr}
   <script type="text/javascript">
   function disp(){
     if(window.confirm("本当に削除しますか")){
