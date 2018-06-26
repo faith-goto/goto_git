@@ -1,16 +1,17 @@
 mysql> SELECT * FROM kojin;
-+----+-----------------+--------+
-| id | name            | sex    |
-+----+-----------------+--------+
-|  1 | goto shun       | mele   |
-|  2 | naito maharu    | mele   |
-|  3 | saito masa      | mele   |
-|  4 | arishiro teppei | mele   |
-|  5 | ode asuka       | femele |
-|  6 | onoda kun       | femele |
-|  7 | tajima humio    | mele   |
-|  8 | goto shun       | male   |
-+----+-----------------+--------+
++----+-----------------+--------+------------+
+| id | name            | sex    | birthday   |
++----+-----------------+--------+------------+
+|  1 | goto shun       | mele   | 1996-02-23 |
+|  2 | naito maharu    | mele   | 1996-01-01 |
+|  3 | saito masa      | mele   | 1996-01-01 |
+|  4 | arishiro teppei | mele   | 1996-01-01 |
+|  5 | ode asuka       | femele | 1996-01-01 |
+|  6 | onoda kun       | femele | 1996-01-01 |
+|  7 | tajima humio    | mele   | 1996-01-01 |
+|  8 | goto shun       | male   | 1996-01-01 |
++----+-----------------+--------+------------+
+
 
 mysql> SELECT * FROM all_test;
 +----+-----------------------+------------+
