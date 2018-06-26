@@ -104,25 +104,29 @@ else
   onlystr = "複数テーブルを用いたユーザのテスト結果(同性同名分けるよVer)"
 end
 
-deluser = cgi["test_data"]
-
-
-
+del_id = cgi["id"]
+del_name = cgi["name"]
+#テスト種目の文字列をIDに変換する
+d = res_all_test.count
+for d in 0..d -1
+  if cgi["testname"] == all_test_testname[d] then
+    del_testname = all_test_id[d]
+  end
+end
+client.query("DELETE FROM res_test WHERE id='#{del_id}' AND name='#{del_name}' AND id_test='#{del_testname}'")
 
 print "Content-type: text/html\n\n"
-
-print "test:#{deluser}です"
-
 
 print <<EOM
 <html>
   <head>
   <meta http-equiv="Content-type" content="text/html; charset=euc-jp">
+  <meta http-equiv="refresh" content="60" >
   <title>検索フォーム</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
   <a href='./'>TOP</a>
-  <a href='./'>個人情報登録</a>
+  <a href='./signup.cgi'>個人情報登録</a>
   </head>
   <body>
 
@@ -143,9 +147,7 @@ EOM
       puts ("<td>#{(jpn[i]+math[i]+eng[i]+sci[i]+soc[i])/5}</td>")
       puts ("<td><a href='./change_test.cgi?id=#{id[i]}&name=#{name[i]}&testname=#{testname[i]}&testday=#{testday[i]}&jpn=#{jpn[i]}&math=#{math[i]}&eng=#{eng[i]}&sci=#{sci[i]}&soc=#{soc[i]}'>編集</a></td>")
 
-      puts ("<td><input type='hidden' name='deluser' value='#{id[i]}'>
-        <button type='submit' id='del_button' onClick='disp()'>削除</button>
-        </td>")
+      puts ("<td><a href='./test.cgi?id=#{id[i]}&name=#{name[i]}&testname=#{testname[i]}' onClick='disp()'>削除</a></td>")
       puts ("</tr>")
     end
 
