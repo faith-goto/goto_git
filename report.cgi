@@ -35,21 +35,33 @@ res_all_test = client.query("SELECT * FROM all_test;").each do |t_data|
   all_test_testday.push(t_data["testday"])
 end
 
-id = cgi["new_id"]
-id_test = cgi["new_test"]
-jpn = cgi["jpnval"]
-math = cgi["mathval"]
-eng = cgi["engval"]
-sci = cgi["scival"]
-soc = cgi["socval"]
-cthid = id.to_i
-cthid -= 1
-name = kojin_name[cthid]
-
-if cgi["new_id"] != "" then
-  client.query("INSERT INTO res_test (id,name,id_test,jpn,math,eng,sci,created,modified,soc) VALUES (#{id},'#{name}',#{id_test},#{jpn},#{math},#{eng},#{sci},now(),now(),#{soc});")
+check_id =[]
+check_name=[]
+check_id_test = []
+check_res_test = client.query("SELECT id,name,id_test FROM res_test;").each do |check_data|
+    check_id.push(check_data["id"])
+    check_name.push(check_data["name"])
+    check_id_test.push(check_data["id_test"])
 end
 
+
+
+
+if cgi["new_id"] != "" then
+  id = cgi["new_id"]
+  id_test = cgi["new_test"]
+  jpn = cgi["jpnval"]
+  math = cgi["mathval"]
+  eng = cgi["engval"]
+  sci = cgi["scival"]
+  soc = cgi["socval"]
+  cthid = id.to_i
+  cthid -= 1
+  name = kojin_name[cthid]
+
+  client.query("INSERT INTO res_test (id,name,id_test,jpn,math,eng,sci,created,modified,soc) VALUES (#{id},'#{name}',#{id_test},#{jpn},#{math},#{eng},#{sci},now(),now(),#{soc});")
+
+end
 
 print "Content-type: text/html\n\n"
 
@@ -57,7 +69,7 @@ print <<EOM
 <html>
   <head>
   <meta http-equiv="Content-type" content="text/html; charset=euc-jp">
-  <title>検索フォーム</title>
+  <title>テストデータ入力</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
   <a href='./'>TOP</a>

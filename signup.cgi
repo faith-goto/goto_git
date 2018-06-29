@@ -43,8 +43,6 @@ end
 
 print "Content-type: text/html\n\n"
 
-print "test:#{lastYMD}"
-
 print <<EOM
 <html>
   <head>

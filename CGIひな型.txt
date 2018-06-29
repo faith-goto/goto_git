@@ -39,3 +39,6 @@ print <<EOM
   </body>
 </html>
 EOM
+
+add イベントリスナ
+J
