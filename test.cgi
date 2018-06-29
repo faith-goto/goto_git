@@ -103,6 +103,7 @@ else
   onlystr = "複数テーブルを用いたユーザのテスト結果(同性同名分けるよVer)"
 end
 
+<<<<<<< HEAD
 #テスト種目別データ
 if cgi["select_testname"] !="" then
 
@@ -139,6 +140,8 @@ else
 end
 
 
+=======
+>>>>>>> addsignform
 del_id = cgi["id"]
 del_name = cgi["name"]
 #テスト種目の文字列をIDに変換する
@@ -162,7 +165,10 @@ print <<EOM
 
   <a href='./'>TOP</a>
   <a href='./signup.cgi'>個人情報登録</a>
+<<<<<<< HEAD
   <a href='./report.cgi'>テスト入力フォーム</a>
+=======
+>>>>>>> addsignform
   </head>
   <body>
 

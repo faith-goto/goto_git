@@ -336,12 +336,6 @@ end
 print <<EOM
 </table>
 
-<a href='./test.CGI'>複数データ管理</a>
-
-
-
-
-</form>
 <script type="text/javascript">
 function showall(){
   var showuser = document.getElementById("alluser");
