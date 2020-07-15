@@ -1,3 +1,3 @@
 # goto_git
 
-http://localhost:3000/signup
+https://thumva.com/signup?utm_source=info.thumva.com&utm_medium=referral&utm_campaign=eplus
